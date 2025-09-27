@@ -4,6 +4,11 @@ import dotenv from 'dotenv'
 import path from "path"
 import { fileURLToPath } from "url";
 dotenv.config()
+
+import express from "express"; //dummy server for render
+const app = express();
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`listening for nothing`));
 //require('dotenv').config()
 //const path = require('path')
 //const fs = require('fs')

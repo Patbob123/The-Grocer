@@ -28,5 +28,35 @@
       "[2025-09-27T21:35:50.873Z] hashtagpls subtracted $100: no msg",
       "[2025-09-27T21:36:02.901Z] hashtagpls subtracted $269: no msg"
     ]
+  },
+  "1412256962284097669": {
+    "participants": [
+      "386627945785065483",
+      "463109420767772694",
+      "439956083465781279"
+    ],
+    "ledger": {
+      "386627945785065483": {
+        "owedBy": {}
+      },
+      "463109420767772694": {
+        "owedBy": {
+          "386627945785065483": 8.706666666666667,
+          "439956083465781279": 8.706666666666667
+        }
+      },
+      "439956083465781279": {
+        "owedBy": {
+          "386627945785065483": 20.366666666666667,
+          "463109420767772694": 20.366666666666667
+        }
+      }
+    },
+    "log": [
+      "[2025-09-27T21:41:18.729Z] hashtagpls added $53.1 for farmingrice123 to all: week 4 main",
+      "[2025-09-27T21:41:59.063Z] hashtagpls added $14.12 for coolflyintiger to all: milk soap etc",
+      "[2025-09-27T21:42:51.719Z] hashtagpls added $8 for farmingrice123 to all: eggs",
+      "[2025-09-27T21:43:13.798Z] hashtagpls added $12 for coolflyintiger to all: eggs"
+    ]
   }
 }
