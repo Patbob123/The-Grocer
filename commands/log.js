@@ -13,12 +13,12 @@ export default {
             return interaction.reply("no logs.");
         }
 
-        const embed = new EmbedBuilder()
+        const x = new EmbedBuilder()
             .setTitle("THE LOG (legendary card 2 elixir)")
             .setColor(0xb411fa)
             .setDescription(ledgerDB[guildId].log.join("\n").slice(-4000)) 
             .setTimestamp();
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [x] });
     }
 };

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
-import { ledgerDB } from "../ledger.js";
+import { ledgerDB, logEvent } from "../ledger.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -28,6 +28,7 @@ export default {
         const targetUser = interaction.options.getUser("guy")
         const userId = targetUser.id;
         const amount = interaction.options.getNumber("amount") || ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id]
+        const logMsg = interaction.options.getString("description") || "no msg"
 
         if (userId == interaction.user.id) return interaction.reply("cant sub cost from the same guy");
 

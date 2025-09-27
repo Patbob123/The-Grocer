@@ -20,7 +20,7 @@ export default {
         if (!ledgerDB[guildId]) ledgerDB[guildId] = { participants: [], ledger: {} };
 
         if (ledgerDB[guildId].participants.includes(userId)) {
-            ledgerDB[guildId].participants.remove(userId)
+            ledgerDB[guildId].participants.pop(userId)
             if (!ledgerDB[guildId].ledger[userId]) ledgerDB[guildId].ledger[userId] = { owedBy: {} };
 
             await interaction.reply(`${targetUser.username} is now on the streets.`);

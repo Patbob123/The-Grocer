@@ -49,7 +49,7 @@ export default {
             return interaction.reply("this guy isnt in the house yet")
         }
 
-        if(amount <= 0){
+        if (amount <= 0) {
             return interaction.reply("amount can't be less than 0")
         }
 
@@ -60,8 +60,12 @@ export default {
             if (!ledgerDB[guildId].participants.includes(onlyGuy.id)) {
                 return interaction.reply("this guy isnt in the house yet")
             }
+            if (userId == onlyGuy.id) return interaction.reply("this is the same guy")
             if (!ledgerDB[guildId].ledger[userId].owedBy[onlyGuy.id]) ledgerDB[guildId].ledger[userId].owedBy[onlyGuy.id] = 0;
             ledgerDB[guildId].ledger[userId].owedBy[onlyGuy.id] += amount;
+
+            logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}: ${logMsg}`)
+            await interaction.reply(`${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}`);
         } else {
             const participants = ledgerDB[guildId].participants.filter(id => id !== userId);
             if (participants.length === 0) return interaction.reply("no one other than you in the house");
@@ -71,11 +75,11 @@ export default {
                 if (!ledgerDB[guildId].ledger[userId].owedBy[id]) ledgerDB[guildId].ledger[userId].owedBy[id] = 0;
                 ledgerDB[guildId].ledger[userId].owedBy[id] += splitAmount;
             });
-            
-            logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username}: ${logMsg}`)
 
+            logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username} to all: ${logMsg}`)
             await interaction.reply(`${interaction.user.username} added $${amount} for ${targetUser.username}, split among ${participants.length} other bois in the house for ($${splitAmount} each).`);
         }
+
 
     }
 };

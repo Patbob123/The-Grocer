@@ -1,8 +1,8 @@
 {
   "770325257751363624": {
     "participants": [
-      "386627945785065483",
-      "1023718517784203394"
+      "1023718517784203394",
+      "386627945785065483"
     ],
     "ledger": {
       "386627945785065483": {
@@ -12,7 +12,8 @@
       },
       "1023718517784203394": {
         "owedBy": {
-          "386627945785065483": 188
+          "386627945785065483": 0,
+          "1023718517784203394": 123
         }
       }
     },
@@ -20,7 +21,12 @@
       "[2025-09-27T21:03:57.912Z] hashtagpls added $12 for hashtagpls: no msg",
       "[2025-09-27T21:05:03.872Z] hashtagpls added $12 for hashtagpls: no msg",
       "[2025-09-27T21:07:27.985Z] hashtagpls added $123 for hashtagpls: no msg",
-      "[2025-09-27T21:07:35.587Z] hashtagpls added $123 for hashtagpls: sss"
+      "[2025-09-27T21:07:35.587Z] hashtagpls added $123 for hashtagpls: sss",
+      "[2025-09-27T21:20:46.366Z] hashtagpls subtracted $188: no msg",
+      "[2025-09-27T21:33:33.064Z] hashtagpls added $123 for The Grocer: desc",
+      "[2025-09-27T21:35:12.246Z] hashtagpls added $123 for The Grocer to hashtagpls: desc",
+      "[2025-09-27T21:35:50.873Z] hashtagpls subtracted $100: no msg",
+      "[2025-09-27T21:36:02.901Z] hashtagpls subtracted $269: no msg"
     ]
   }
 }
