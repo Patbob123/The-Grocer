@@ -1,0 +1,29 @@
+{
+  "name": "the-grocer",
+  "version": "1.0.0",
+  "description": "we buy food here",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon ./bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Patbob123/The-Grocer.git"
+  },
+  "keywords": [
+    "discord"
+  ],
+  "author": "patbob123",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Patbob123/The-Grocer/issues"
+  },
+  "homepage": "https://github.com/Patbob123/The-Grocer#readme",
+  "dependencies": {
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.2",
+    "fs": "^0.0.1-security",
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "770325257751363624": {
+    "participants": [
+      "386627945785065483",
+      "1023718517784203394"
+    ],
+    "ledger": {
+      "386627945785065483": {
+        "owedBy": {
+          "1023718517784203394": 141
+        }
+      },
+      "1023718517784203394": {
+        "owedBy": {
+          "386627945785065483": 188
+        }
+      }
+    },
+    "log": [
+      "[2025-09-27T21:03:57.912Z] hashtagpls added $12 for hashtagpls: no msg",
+      "[2025-09-27T21:05:03.872Z] hashtagpls added $12 for hashtagpls: no msg",
+      "[2025-09-27T21:07:27.985Z] hashtagpls added $123 for hashtagpls: no msg",
+      "[2025-09-27T21:07:35.587Z] hashtagpls added $123 for hashtagpls: sss"
+    ]
+  }
+}
