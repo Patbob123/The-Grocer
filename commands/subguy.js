@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js'
-import { ledgerDB } from "../ledger.js";
+import { ledgerDB, ensureLedger, subGuy } from "../ledger.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -16,16 +16,18 @@ export default {
         const targetUser = interaction.options.getUser("guy")
         const userId = targetUser.id
 
+        try {
+            await ensureLedger(guildId);
 
-        if (!ledgerDB[guildId]) ledgerDB[guildId] = { participants: [], ledger: {} };
-
-        if (ledgerDB[guildId].participants.includes(userId)) {
-            ledgerDB[guildId].participants.pop(userId)
-            if (!ledgerDB[guildId].ledger[userId]) ledgerDB[guildId].ledger[userId] = { owedBy: {} };
+            if (!ledgerDB[guildId].participants.includes(userId)) {
+                return await interaction.reply(`${targetUser.username} is ALREADY OUTTA THE HOUSE.`);
+            }
+            await subGuy(guildId, userId);
 
             await interaction.reply(`${targetUser.username} is now on the streets.`);
-        } else {
-            await interaction.reply(`${targetUser.username} is ALREADY OUTTA THE HOUSE.`);
+        } catch (err) {
+            console.error("database died");
+            await interaction.reply("database died, check console");
         }
     }
 };

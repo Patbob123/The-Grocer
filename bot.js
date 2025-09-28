@@ -8,6 +8,7 @@ dotenv.config()
 import express from "express"; //dummy server for render
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.get('/', (req, res) => { res.send('nothing!')})
 app.listen(PORT, () => console.log(`listening for nothing`));
 //require('dotenv').config()
 //const path = require('path')
