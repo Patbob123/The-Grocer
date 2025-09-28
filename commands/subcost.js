@@ -29,6 +29,10 @@ export default {
 
         const targetUser = interaction.options.getUser("guy")
         const userId = targetUser.id;
+
+        if (!ledgerDB[guildId].ledger[userId]) ledgerDB[guildId].ledger[userId] = { owedBy: {} }
+        if (!ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id]) ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id] = 0
+
         const amount = interaction.options.getNumber("amount") || ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id]
         const logMsg = interaction.options.getString("description") || "no msg"
 
@@ -44,10 +48,9 @@ export default {
         if (amount <= 0) return interaction.reply("amount can't be less than 0")
 
         if (amount > ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id]) return interaction.reply("you don't owe that much")
-        
 
-        if (!ledgerDB[guildId].ledger[userId]) ledgerDB[guildId].ledger[userId] = { owedBy: {} }
-        if (!ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id]) ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id] = 0
+
+
 
         const newAmount = ledgerDB[guildId].ledger[userId].owedBy[interaction.user.id] - amount;
         await updateCost(guildId, userId, interaction.user.id, newAmount);

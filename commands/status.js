@@ -16,7 +16,6 @@ export default {
         const guildId = interaction.guild.id
         await ensureLedger(guildId)
 
-
         const showAll = interaction.options.getBoolean("all") || false
 
         console.log(ledgerDB[guildId])

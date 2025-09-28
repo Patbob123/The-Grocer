@@ -20,9 +20,9 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-rest.put(Routes.applicationGuildCommands('1023718517784203394', '770325257751363624'), { body: commands })
-	.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
-	.catch(console.error);
+// rest.put(Routes.applicationGuildCommands('1023718517784203394', '1412256962284097669'), { body: commands })
+// 	.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
+// 	.catch(console.error);
 rest.put( Routes.applicationCommands(process.env.APPID), { body: commands })
 	.then((data) => console.log(`Successfully reloaded ${data.length} application commands.`))
 	.catch(console.error);;

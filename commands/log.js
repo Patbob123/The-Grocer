@@ -9,7 +9,6 @@ export default {
     async execute(interaction) {
         await ensureLedger(interaction.guild.id)
 
-
         const guildId = interaction.guild.id;
 
         if (!ledgerDB[guildId] || !ledgerDB[guildId].log || ledgerDB[guildId].log.length === 0) {
