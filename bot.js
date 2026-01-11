@@ -5,7 +5,7 @@ import path from "path"
 import { fileURLToPath } from "url";
 dotenv.config()
 
-import express from "express"; //dummy server for render
+import express from "express"; //dumb server for render
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => { res.send('nothing!')})
