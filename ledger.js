@@ -14,38 +14,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 let ledgerDB = {};
 
-
-// async function initLedger() {
-//     const tableSQL = [
-//         `CREATE TABLE IF NOT EXISTS participants (
-//             guild_id TEXT NOT NULL,
-//             user_id TEXT NOT NULL,
-//             PRIMARY KEY (guild_id, user_id)
-//         );`,
-//         `CREATE TABLE IF NOT EXISTS ledger (
-//             guild_id TEXT NOT NULL,
-//             creditor_id TEXT NOT NULL,
-//             debtor_id TEXT NOT NULL,
-//             amount NUMERIC DEFAULT 0,
-//             PRIMARY KEY (guild_id, creditor_id, debtor_id)
-//         );`,
-//         `CREATE TABLE IF NOT EXISTS logs (
-//             id SERIAL PRIMARY KEY,
-//             guild_id TEXT NOT NULL,
-//             message TEXT NOT NULL,
-//             created_at TIMESTAMP DEFAULT NOW()
-//         );`
-//     ];
-
-//     for (const sql of tableSQL) {
-//         const { error } = await supabase.rpc('exec_sql', { sql });
-//         if (error && !error.message.includes('already exists')) {
-//             console.error("initLedger error:", error);
-//         }
-//     }
-
-// }
-
+// loads participants, logs, ledger entries into memory
 async function loadLedger(guildId) {
     if (!ledgerDB[guildId]) ledgerDB[guildId] = { participants: [], ledger: {}, log: [] };
 
@@ -55,7 +24,6 @@ async function loadLedger(guildId) {
         .eq('guild_id', guildId);
 
     ledgerDB[guildId].participants = participants?.map(r => r.user_id) || [];
-
 
     ledgerDB[guildId].ledger = {};
     for (const userId of ledgerDB[guildId].participants) {
@@ -76,6 +44,7 @@ async function loadLedger(guildId) {
         }
     }
 
+    // load last 50 logs
     const { data: logs } = await supabase
         .from('logs')
         .select('message, created_at')
@@ -88,35 +57,31 @@ async function loadLedger(guildId) {
         : [];
 }
 
+// creates key for guild if no guild
 async function ensureLedger(guildId) {
     if (!ledgerDB[guildId]) {
         ledgerDB[guildId] = { participants: [], ledger: {}, log: [] };
+        await loadLedger(guildId);
     }
-    await loadLedger(guildId);
 }
 
+// add participant in house in db, and in ledger
 async function addGuy(guildId, userId) {
-    await supabase
-        .from('participants')
-        .upsert({ guild_id: guildId, user_id: userId });
-
-    await ensureLedger(guildId);
+    await supabase.from('participants').upsert({ guild_id: guildId, user_id: userId });
     if (!ledgerDB[guildId].participants.includes(userId)) {
         ledgerDB[guildId].participants.push(userId);
+        ledgerDB[guildId].ledger[userId] = { owedBy: {} };
     }
 }
 
+// sub guy from db, also delete from ledger memory
 async function subGuy(guildId, userId) {
-    await supabase.from('participants')
-        .delete()
-        .match({ guild_id: guildId, user_id: userId });
-
+    await supabase.from('participants').delete().match({ guild_id: guildId, user_id: userId });
     await supabase.from('ledger')
         .delete()
         .or(`creditor_id.eq.${userId},debtor_id.eq.${userId}`)
         .eq('guild_id', guildId);
 
-    await ensureLedger(guildId);
     ledgerDB[guildId].participants = ledgerDB[guildId].participants.filter(id => id !== userId);
     delete ledgerDB[guildId].ledger[userId];
     for (const creditorId of Object.keys(ledgerDB[guildId].ledger)) {
@@ -124,28 +89,27 @@ async function subGuy(guildId, userId) {
     }
 }
 
+// update credit and debits for guys in db and memory
 async function updateCost(guildId, creditorId, debtorId, amount) {
-    await ensureLedger(guildId);
-    if (!ledgerDB[guildId].ledger[creditorId]) ledgerDB[guildId].ledger[creditorId] = { owedBy: {} };
-    ledgerDB[guildId].ledger[creditorId].owedBy[debtorId] = amount;
-
     await supabase.from('ledger').upsert({
         guild_id: guildId,
         creditor_id: creditorId,
         debtor_id: debtorId,
         amount
     });
+
+    if (!ledgerDB[guildId].ledger[creditorId]) ledgerDB[guildId].ledger[creditorId] = { owedBy: {} };
+    ledgerDB[guildId].ledger[creditorId].owedBy[debtorId] = amount;
 }
 
-
-
+// get logs
 async function logEvent(guildId, message) {
-    await ensureLedger(guildId);
     await supabase.from('logs').insert({ guild_id: guildId, message });
     const timestamp = new Date().toISOString();
     ledgerDB[guildId].log.push(`[${timestamp}] ${message}`);
 }
 
+// refresh memory every so often
 setInterval(async () => {
     for (const guildId of Object.keys(ledgerDB)) {
         await loadLedger(guildId);

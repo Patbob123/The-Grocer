@@ -29,12 +29,14 @@ export default {
                 .setRequired(false)
         ),
     async execute(interaction) {
+        await interaction.deferReply();
+
         const guildId = interaction.guild.id;
         await ensureLedger(guildId)
 
         const targetUser = interaction.options.getUser("guy") || interaction.user;
         const userId = targetUser.id;
-        const amount = interaction.options.getNumber("amount");
+        const amount = Math.round(interaction.options.getNumber("amount") * 10000)/10000;
         const onlyGuy = interaction.options.getUser("onlyguy")
         const logMsg = interaction.options.getString("description") || "no msg"
 
@@ -60,13 +62,16 @@ export default {
             const prev = ledgerDB[guildId].ledger[userId].owedBy[onlyGuy.id] || 0
             await updateCost(guildId, userId, onlyGuy.id, prev + amount)
 
+            // amount rounds to 2 for display
+            amount = Math.round(amount * 100) / 100
+
             await logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}: ${logMsg}`)
             return interaction.reply(`${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}`);
         } else {
             const others = participants.filter(id => id !== userId)
             if (others.length === 0) return interaction.reply("no one other than you in the house");
 
-            const splitAmount = amount / participants.length;
+            const splitAmount = Math.round((amount / participants.length) * 10000)/10000;
             for (const id of others) {
                 await addGuy(guildId, id);
 
@@ -74,8 +79,10 @@ export default {
                 await updateCost(guildId, userId, id, prev + splitAmount);
             }
 
+            // split amount rounds to 2 for display
+            splitAmount = Math.round(splitAmount * 100) / 100
             await logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username} to all: ${logMsg}`)
-            return interaction.reply(`${interaction.user.username} added $${amount} for ${targetUser.username}, split among ${others.length} other bois in the house for ($${splitAmount} each).`);
+            return interaction.editReply(`${interaction.user.username} added $${amount} for ${targetUser.username}, split among ${others.length} other bois in the house for ($${splitAmount} each).`);
         }
 
 
