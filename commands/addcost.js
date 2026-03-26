@@ -36,26 +36,25 @@ export default {
 
         const targetUser = interaction.options.getUser("guy") || interaction.user;
         const userId = targetUser.id;
-        const amount = Math.round(interaction.options.getNumber("amount") * 10000)/10000;
+        const amount = Math.round(interaction.options.getNumber("amount") * 10000) / 10000;
         const onlyGuy = interaction.options.getUser("onlyguy")
         const logMsg = interaction.options.getString("description") || "no msg"
 
         const participants = ledgerDB[guildId].participants
 
-        if (participants.length === 0) return interaction.reply("no one in the house")
-        if (!participants.includes(userId)) return interaction.reply("this guy isn't in the house yet")
-        if (!participants.includes(interaction.user.id)) return interaction.reply("get in the house first")
+        if (participants.length === 0) return interaction.editReply("no one in the house")
+        if (!participants.includes(interaction.user.id)) return interaction.editReply("get in the house first")
+        if (!participants.includes(userId)) return interaction.editReply("this guy isn't in the house yet")
 
-
-        if (amount <= 0) return interaction.reply("amount can't be less than 0")
+        if (amount <= 0) return interaction.editReply("amount can't be less than 0")
 
 
 
         if (!ledgerDB[guildId].ledger[userId]) ledgerDB[guildId].ledger[userId] = { owedBy: {} };
 
         if (onlyGuy) {
-            if (!participants.includes(onlyGuy.id)) return interaction.reply("this guy isn't in the house yet")
-            if (userId == onlyGuy.id) return interaction.reply("this is the same guy")
+            if (!participants.includes(onlyGuy.id)) return interaction.editReply("this guy isn't in the house yet")
+            if (userId == onlyGuy.id) return interaction.editReply("this is the same guy")
 
             await addGuy(guildId, onlyGuy.id);
 
@@ -66,12 +65,12 @@ export default {
             amount = Math.round(amount * 100) / 100
 
             await logEvent(guildId, `${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}: ${logMsg}`)
-            return interaction.reply(`${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}`);
+            return interaction.editReply(`${interaction.user.username} added $${amount} for ${targetUser.username} to ${onlyGuy.username}`);
         } else {
             const others = participants.filter(id => id !== userId)
-            if (others.length === 0) return interaction.reply("no one other than you in the house");
+            if (others.length === 0) return interaction.editReply("no one other than you in the house");
 
-            const splitAmount = Math.round((amount / participants.length) * 10000)/10000;
+            let splitAmount = Math.round((amount / participants.length) * 10000) / 10000;
             for (const id of others) {
                 await addGuy(guildId, id);
 
@@ -87,4 +86,6 @@ export default {
 
 
     }
+
+
 };

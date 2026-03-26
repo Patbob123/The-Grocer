@@ -12,6 +12,8 @@ export default {
                 .setRequired(true)
         ),
     async execute(interaction) {
+    await interaction.deferReply();
+
         const guildId = interaction.guild.id
         const targetUser = interaction.options.getUser("guy")
         const userId = targetUser.id
@@ -20,14 +22,14 @@ export default {
             await ensureLedger(guildId);
 
             if (!ledgerDB[guildId].participants.includes(userId)) {
-                return await interaction.reply(`${targetUser.username} is ALREADY OUTTA THE HOUSE.`);
+                return await interaction.editReply(`${targetUser.username} is ALREADY OUTTA THE HOUSE.`);
             }
             await subGuy(guildId, userId);
 
-            await interaction.reply(`${targetUser.username} is now on the streets.`);
+            await interaction.editReply(`${targetUser.username} is now on the streets.`);
         } catch (err) {
             console.error("database died");
-            await interaction.reply("database died, check console");
+            await interaction.editReply("database died, check console");
         }
     }
 };

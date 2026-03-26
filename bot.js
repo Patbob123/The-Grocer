@@ -8,7 +8,7 @@ dotenv.config()
 import express from "express"; //dummy server for render
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.get('/', (req, res) => { res.send('nothing!')})
+app.get('/', (req, res) => { res.send('nothing!') })
 app.listen(PORT, () => console.log(`listening for nothing`));
 //require('dotenv').config()
 //const path = require('path')
@@ -22,7 +22,7 @@ const client = new Client({
 		status: 'online',
 		afk: false,
 		activities: [{
-			name: "Costcodle",
+			name: "Costcodle.com",
 			type: ActivityType.Playing
 		}],
 	},
@@ -100,7 +100,17 @@ client.on('interactionCreate', async interaction => {
 			console.error(error);
 		}
 	}
-
+	else if (interaction.isModalSubmit()) {
+		const commandName = interaction.customId.split("_")[0];
+		const command = interaction.client.commands.get(commandName);
+		console.log(commandName)
+		if (command?.modalSubmit) await command.modalSubmit(interaction);
+	}
+	else if (interaction.isButton()) {
+		const commandName = interaction.customId.split("_")[0];
+		const command = interaction.client.commands.get(commandName);
+		if (command?.buttonSubmit) await command.buttonSubmit(interaction);
+	}
 
 });
 
